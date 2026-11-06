@@ -2,12 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <application android:theme="@style/AppTheme" android:label="კადრი TV" android:icon="@drawable/ic_launcher" android:banner="@drawable/banner" android:usesCleartextTraffic="false" android:allowBackup="false" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
-        <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape">
+    <application android:theme="@style/AppTheme" android:label="@string/app_name" android:icon="@drawable/ic_launcher" android:banner="@drawable/banner" android:usesCleartextTraffic="false" android:allowBackup="false" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
+        <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape" android:launchMode="singleTop">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LEANBACK_LAUNCHER" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+            <intent-filter><action android:name="android.intent.action.VIEW" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.BROWSABLE" /><data android:scheme="kadritv" android:host="movie" /><data android:scheme="kadritv" android:host="home" /></intent-filter>
         </activity>
         <activity android:name=".PlayerActivity" android:exported="false" android:screenOrientation="landscape" android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize" />
+        <service android:name=".RecommendationJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true" />
+        <receiver android:name=".RecommendationReceiver" android:exported="true">
+            <intent-filter><action android:name="android.media.tv.action.INITIALIZE_PROGRAMS" /><action android:name="android.media.tv.action.PREVIEW_PROGRAM_BROWSABLE_DISABLED" /><action android:name="android.intent.action.MY_PACKAGE_REPLACED" /></intent-filter>
+        </receiver>
     </application>
 </manifest>

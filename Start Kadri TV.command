@@ -1,6 +1,6 @@
 #!/bin/zsh
 cd "${0:A:h}"
-if /usr/bin/curl -fsS --max-time 2 http://localhost:8765/api/bootstrap | /usr/bin/grep -q 'Kadri TV'; then
+if /usr/bin/curl -fsS --max-time 2 http://localhost:8765/api/bootstrap | /usr/bin/grep -Eq 'Movie Night|Kadri TV'; then
   open -a 'Google Chrome' http://localhost:8765
   exit 0
 fi

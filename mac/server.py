@@ -64,7 +64,7 @@ def index():
 
 @app.get("/api/bootstrap")
 def bootstrap():
-    return jsonify(token=token, example=EXAMPLE, name="Kadri TV")
+    return jsonify(token=token, example=EXAMPLE, name="Movie Night")
 
 
 @app.get("/api/catalog")
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             else:
                 webbrowser.open(url)
         threading.Timer(0.5, open_app).start()
-    print(f"Kadri TV → http://localhost:{PORT}", flush=True)
+    print(f"Movie Night → http://localhost:{PORT}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
