@@ -1,0 +1,11 @@
+.venv/
+.gradle/
+.gradle-home/
+.android-home/
+**/build/
+**/__pycache__/
+*.pyc
+.DS_Store
+android-tv/local.properties
+node_modules/
+.cache/

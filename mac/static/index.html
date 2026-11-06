@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>კადრი TV — შენი კინო, დიდ ეკრანზე</title>
+  <meta name="theme-color" content="#101114">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="symbols" aria-hidden="true"><symbol id="cast-icon" viewBox="0 0 24 24"><path d="M3 10V5h18v14h-7M3 19h.01M3 15a4 4 0 0 1 4 4M3 11a8 8 0 0 1 8 8"/></symbol><symbol id="play-icon" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol></svg>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">კ</span><span>კადრი<span class="brand-tv">TV</span></span></a>
+    <span class="top-caption">შენი კინო, დიდ ეკრანზე</span>
+    <button id="device-button" class="device-button"><span class="status-dot"></span><span id="device-label">ტელევიზორის არჩევა</span><svg><use href="#cast-icon"/></svg></button>
+  </header>
+  <main>
+    <section class="hero" id="hero">
+      <div class="hero-image" id="hero-image"></div><div class="hero-shade"></div>
+      <div class="hero-content">
+        <span class="eyebrow"><span class="live-dot"></span> MYKADRI → შენი ტელევიზორი</span>
+        <h1>კინოს ადგილი<br><span>დიდ ეკრანზეა.</span></h1>
+        <p>აირჩიე ფილმი. დაუკავშირდი ტელევიზორს.<br>მოკალათდი და ისიამოვნე.</p>
+        <form id="link-form" class="link-form"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 13 4-4m-6 6-2 2a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0m2 3 2-2a4 4 0 0 1 6 6l-5 5a4 4 0 0 1-6 0"/></svg><input id="movie-url" type="url" required placeholder="ჩასვი MyKadri-ის ბმული" aria-label="MyKadri-ის ბმული"><button type="submit" id="open-button">გახსნა <span>↗</span></button></form>
+        <button id="example-button" class="text-button">სცადე: ვიჟენქვესთი <span>→</span></button>
+      </div>
+      <div class="hero-foot"><span>GOOGLE CAST</span><span>პირდაპირი ვიდეო · ქართული გახმოვანება</span></div>
+    </section>
+    <div id="message" role="status" class="message" hidden></div>
+    <section id="movie-panel" class="movie-panel" hidden>
+      <img id="movie-image" class="movie-image" alt="">
+      <div class="movie-detail"><span class="eyebrow">ახლა აირჩიე</span><h2 id="movie-title"></h2><span id="movie-english" class="muted"></span><p id="movie-description"></p><div class="selectors"><label>სეზონი<select id="season"></select></label><label>ენა<select id="language"></select></label><label class="episode-label">სერია / ხარისხი<select id="source"></select></label></div><div class="movie-actions"><button class="primary" id="cast-button"><svg><use href="#cast-icon"/></svg>ტელევიზორში გაშვება</button><a id="original-link" target="_blank" rel="noopener noreferrer">MyKadri-ზე ნახვა ↗</a></div><p id="source-notice" class="notice"></p></div>
+    </section>
+    <section class="catalog-section"><div class="section-heading"><div><span class="eyebrow">მოაწყვე კინოსაღამო</span><h2 id="catalog-title">შეარჩიე შემდეგი კადრი</h2></div><form id="search-form" class="search"><input id="search" placeholder="ფილმის ძებნა…" aria-label="ფილმის ძებნა"><button type="submit" aria-label="ძებნა">⌕</button></form></div><div id="catalog" class="catalog" aria-live="polite"><div class="catalog-loading">ფილმები იტვირთება…</div></div></section>
+    <section class="steps"><div><span>01</span><p>შეარჩიე ფილმი<small>კატალოგიდან ან ბმულით</small></p></div><div><span>02</span><p>აირჩიე ტელევიზორი<small>Mac და TV ერთ ქსელში</small></p></div><div><span>03</span><p>ჩართე და მოკალათდი<small>მართე ყველაფერი აქედან</small></p></div></section>
+  </main>
+  <footer><span>კადრი TV <span class="muted">/ პირადი კინოსივრცე</span></span><span>ვიდეოების წყარო — MyKadri · არაოფიციალური აპი</span></footer>
+  <section class="remote" id="remote" hidden aria-label="ტელევიზორის მართვა"><div class="remote-info"><span class="status-dot connected"></span><div><strong id="remote-title">ტელევიზორი</strong><small id="remote-state"></small></div></div><div class="remote-controls"><button id="backward" aria-label="10 წამით უკან">−10</button><button id="pause" class="round" aria-label="პაუზა">Ⅱ</button><button id="forward" aria-label="10 წამით წინ">+10</button><button id="stop" aria-label="გაჩერება">■</button></div><div class="timeline"><span id="current-time">0:00</span><input type="range" id="seek" min="0" max="100" value="0" aria-label="გადახვევა"><span id="duration">0:00</span></div><label class="volume">ხმა<input id="volume" type="range" min="0" max="100" value="50" aria-label="ხმის დონე"></label></section>
+  <dialog id="devices-dialog"><div class="dialog-heading"><div><span class="eyebrow">GOOGLE CAST</span><h2>შენი დიდი ეკრანი</h2></div><button id="close-dialog" aria-label="დახურვა">×</button></div><p class="muted">Mac და ტელევიზორი ერთ Wi-Fi ან ლოკალურ ქსელში უნდა იყოს.</p><div id="devices" class="devices"></div><button id="refresh-devices" class="secondary">↻ სიის განახლება</button><details><summary>TV ვერ გამოჩნდა? დაუკავშირდი IP-ით</summary><form id="ip-form"><label for="tv-ip">TV-ის IP მისამართი</label><div><input id="tv-ip" required placeholder="192.168.1.20" inputmode="decimal"><button type="submit" class="primary">დაკავშირება</button></div><small>TV → პარამეტრები → ქსელი → ქსელის სტატუსი</small></form></details><button id="disconnect" class="text-button" hidden>კავშირის გათიშვა</button><p id="device-message" role="status"></p></dialog>
+</body>
+</html>
