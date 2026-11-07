@@ -38,6 +38,19 @@ public class RepositoryTest {
     @Test public void catalogDoesNotDuplicateMovies() throws Exception {
         String html=fixture("home.html");assertEquals(6,Repository.parseCatalog(Jsoup.parse(html+html,Repository.HOME)).length());
     }
+    @Test public void categorySelectionLoadsItsOwnCatalogueInsteadOfTheHomePage() throws Exception {
+        CatalogCategory series=CatalogCategory.ITEMS.stream().filter(c->c.title.equals("სერიალები")).findFirst().get();
+        CatalogCategory comedy=CatalogCategory.ITEMS.stream().filter(c->c.title.equals("კომედია")).findFirst().get();
+        assertEquals("https://mykadri.tv/serialebi_qartulad/",Repository.catalogUrl("",series));
+        assertEquals("https://mykadri.tv/filmebiqartulad/komedia/",Repository.catalogUrl("  ",comedy));
+        assertEquals(Repository.HOME,Repository.catalogUrl("",CatalogCategory.ALL));
+    }
+    @Test public void searchRemainsGlobalAfterSelectingACategoryAndEncodesTheQuery() throws Exception {
+        String query="გრუტი & Groot?";
+        String url=Repository.catalogUrl("  "+query+"  ",CatalogCategory.ITEMS.get(2));
+        assertTrue(url.startsWith(Repository.HOME+"?do=search&subaction=search&story="));
+        assertEquals(query,java.net.URLDecoder.decode(url.split("story=",2)[1],"UTF-8"));
+    }
     @Test public void externalAndLocalUrlsAreRejected() {
         for(String url:new String[]{"http://mykadri.tv/", "https://mykadri.tv.evil.test/", "https://127.0.0.1/", "https://user@mykadri.tv/"}) {try{Repository.pageUrl(url);fail(url);}catch(IllegalArgumentException expected){}}
         assertNull(Repository.mediaUrl("https://evil.test/a.m3u8"));

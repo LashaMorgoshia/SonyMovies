@@ -73,9 +73,14 @@ public final class Repository {
         }
     }
     public static JSONArray catalog(String query) throws Exception {
-        String url=HOME;
-        if(!query.trim().isEmpty()) url += "?do=search&subaction=search&story=" + java.net.URLEncoder.encode(query.trim(),"UTF-8");
-        return parseCatalog(fetch(url));
+        return catalog(query,CatalogCategory.ALL);
+    }
+    static String catalogUrl(String query,CatalogCategory category) throws Exception {
+        if(!query.trim().isEmpty())return HOME+"?do=search&subaction=search&story="+java.net.URLEncoder.encode(query.trim(),"UTF-8");
+        return pageUrl(HOME+category.path);
+    }
+    static JSONArray catalog(String query,CatalogCategory category) throws Exception {
+        return parseCatalog(fetch(catalogUrl(query,category)));
     }
     public static JSONArray parseCatalog(Document doc) throws JSONException {
         JSONArray items=new JSONArray(); Set<String> seen=new HashSet<>();
