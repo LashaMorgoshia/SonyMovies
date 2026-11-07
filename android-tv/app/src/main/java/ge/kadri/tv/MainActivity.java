@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
     private String query="";
     private int generation=0;
     private boolean details=false;
-    private View returnFocus;
+    private View returnFocus,playerReturnFocus;
 
     @Override public void onCreate(Bundle state) { super.onCreate(state); window(); shell(); HomeRecommendations.requestRefresh(this);refreshHomeRecent();if(!handleAppLink(getIntent()))loadCatalog(""); }
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(!handleAppLink(intent))loadCatalog("");}
@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
         TextView description=text(current.optString("description").split("\\s\\d{4}\\s")[0],14,MUTED);description.setMaxLines(4);description.setLineSpacing(dp(4),1);intro.addView(description);
         TextView back=button("← უკან",this::backToCatalog);LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(-2,-2);bp.topMargin=dp(14);intro.addView(back,bp);body.addView(top);
         JSONArray sources=current.optJSONArray("sources");
-        if(sources==null || sources.length()==0){body.addView(text("პირდაპირი ქართული ვიდეონაკადი ვერ მოიძებნა. გარე ჩაშენებული ფლეერები ჯერ არ არის მხარდაჭერილი.",16,MUTED));back.requestFocus();return;}
+        if(sources==null || sources.length()==0){body.addView(text(current.optBoolean("externalOnly")?"ამ გვერდზე მხოლოდ გარე ფლეერებია. Movie Night-ის ფლეერისთვის პირდაპირი ვიდეონაკადი ვერ მოიძებნა.":"ამ გვერდზე Movie Night-ის ფლეერისთვის პირდაპირი ვიდეონაკადი ვერ მოიძებნა.",16,MUTED));back.requestFocus();scroll.scrollTo(0,0);return;}
         TextView quality=button("ხარისხი: "+VideoQuality.label(VideoQuality.preferred(getSharedPreferences("playback",0)))+"  ▾",()->{});
         quality.setOnClickListener(v->showMovieQuality(quality,sources.optJSONObject(0)));LinearLayout.LayoutParams qualityParams=new LinearLayout.LayoutParams(-2,-2);qualityParams.setMargins(0,0,0,dp(8));body.addView(quality,qualityParams);
         String section="";LinearLayout row=null;int count=0;boolean first=true;
@@ -140,7 +140,7 @@ public class MainActivity extends Activity {
             if(!group.equals(section)){section=group;String season=source.optString("season");TextView label=text((season.isEmpty()?"ფილმი":"სეზონი "+season)+"  /  "+source.optString("language"),16,GREEN);label.setPadding(0,dp(15),0,dp(12));body.addView(label);count=0;row=null;}
             if(count%5==0){row=new LinearLayout(this);row.setPadding(0,0,0,dp(10));body.addView(row);}
             String name=source.optString("episode");if(name.isEmpty())name=source.optString("url").contains(".m3u8")?"▶  ყურება":"▶  ყურება · "+source.optString("quality","ორიგინალი");
-            int index=i;TextView play=button(name,()->launch(index));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(58),1);p.setMargins(0,0,dp(10),0);row.addView(play,p);count++;
+            int index=i;TextView play=button(name,()->launch(index));play.setOnClickListener(v->{playerReturnFocus=v;launch(index);});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(58),1);p.setMargins(0,0,dp(10),0);row.addView(play,p);count++;
             if(first){play.requestFocus();first=false;}
         }scroll.scrollTo(0,0);
     }
@@ -171,6 +171,7 @@ public class MainActivity extends Activity {
         imageIo.execute(()->{try{HttpURLConnection connection=(HttpURLConnection)new URL(url).openConnection();connection.setConnectTimeout(8000);connection.setReadTimeout(10000);try(java.io.InputStream stream=connection.getInputStream()){BitmapFactory.Options options=new BitmapFactory.Options();options.inSampleSize=2;Bitmap b=BitmapFactory.decodeStream(stream,null,options);if(b!=null){images.put(url,b);runOnUiThread(()->{if(url.equals(view.getTag()))view.setImageBitmap(b);});}}finally{connection.disconnect();}}catch(Exception ignored){}});
     }
     private void toast(String value){Toast.makeText(this,value,Toast.LENGTH_LONG).show();}
+    @Override protected void onResume(){super.onResume();if(playerReturnFocus!=null&&playerReturnFocus.isAttachedToWindow()){playerReturnFocus.setFocusableInTouchMode(true);playerReturnFocus.requestFocus();}}
     @Override public void onBackPressed(){if(details)backToCatalog();else if(!query.isEmpty()){searchInput.setText("");loadCatalog("");}else new AlertDialog.Builder(this).setTitle("დახურავ "+getString(R.string.app_name)+"-ს?").setPositiveButton("დახურვა",(d,w)->finish()).setNegativeButton("დარჩენა",null).show();}
     @Override protected void onDestroy(){++generation;io.shutdownNow();imageIo.shutdownNow();super.onDestroy();}
 }

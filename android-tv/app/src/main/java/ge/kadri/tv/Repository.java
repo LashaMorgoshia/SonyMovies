@@ -7,7 +7,7 @@ import java.net.URI;
 import java.util.*;
 import java.util.regex.*;
 
-/** Public metadata and JSON only: never run player JavaScript or embedded pages. */
+/** Read public metadata and direct video sources without running embedded players. */
 public final class Repository {
     public static final String HOME = "https://mykadri.tv/";
     public static final String EXAMPLE = HOME + "11881-vijenqvesti-visionquest-2.html";
@@ -57,7 +57,12 @@ public final class Repository {
         String title=text(doc,"h1"); if(title.isEmpty()) title=meta(doc,"og:title").split("\\|")[0];
         title=title.replace(" - ქართულად", "").trim();
         if(title.isEmpty()) throw new IllegalStateException("ფილმის გვერდი ვერ ამოვიცანი.");
-        return new JSONObject().put("title",title).put("englishTitle",text(doc,".fullstory-title-en")).put("description",meta(doc,"og:description")).put("image",meta(doc,"og:image")).put("url",url).put("sources",sources);
+        boolean hasEmbeddedPlayer=false;
+        for(Element iframe:doc.select(".language-player-panel iframe")){
+            String link=iframe.attr("data-src");if(link.isEmpty()||link.equals("about:blank"))link=iframe.attr("src");
+            try{URI frame=URI.create(link);if("https".equals(frame.getScheme())&&frame.getHost()!=null)hasEmbeddedPlayer=true;}catch(IllegalArgumentException ignored){}
+        }
+        return new JSONObject().put("title",title).put("englishTitle",text(doc,".fullstory-title-en")).put("description",meta(doc,"og:description")).put("image",meta(doc,"og:image")).put("url",url).put("sources",sources).put("externalOnly",sources.length()==0&&hasEmbeddedPlayer);
     }
     static void walk(Object value, String season, String episode, String language, JSONArray out, Set<String> seen) throws JSONException {
         if(value instanceof JSONArray) { JSONArray arr=(JSONArray)value; for(int i=0;i<arr.length();i++) walk(arr.get(i),season,episode,language,out,seen); }

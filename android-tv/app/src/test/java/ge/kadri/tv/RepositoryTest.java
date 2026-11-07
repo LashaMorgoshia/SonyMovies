@@ -43,4 +43,14 @@ public class RepositoryTest {
         assertNull(Repository.mediaUrl("https://evil.test/a.m3u8"));
     }
     @Test public void embedOnlyHasNoInventedSource() throws Exception {assertEquals(0,Repository.parseMovie(Jsoup.parse("<h1>ფილმი</h1><iframe src='https://example.test/embed'></iframe>"),Repository.EXAMPLE).getJSONArray("sources").length());}
+    @Test public void grootIsReportedAsExternalOnlyWithoutInventingANativeWatchSource() throws Exception {
+        JSONObject movie=Repository.parseMovie(Jsoup.parse(fixture("groot.html")),"https://mykadri.tv/7697-me-var-gruti-i-am-groot.html");
+        assertEquals("მე ვარ გრუტი",movie.getString("title"));assertEquals(0,movie.getJSONArray("sources").length());
+        assertTrue(movie.getBoolean("externalOnly"));assertFalse(movie.has("embeds"));
+    }
+    @Test public void nativeMovieKeepsItsSourceWhenAnExternalAlternativeExists() throws Exception {
+        String html="<h1>ფილმი</h1><script>let x={sources:[{\"file\":\"https://cdn.mykadri.net/a.mp4\",\"label\":\"1080p\"}]};</script><div class='language-player-panel'><iframe data-src='https://vidsrc.sh/embed/movie/tt123' src='about:blank'></iframe></div>";
+        JSONObject movie=Repository.parseMovie(Jsoup.parse(html),Repository.EXAMPLE);
+        assertEquals(1,movie.getJSONArray("sources").length());assertFalse(movie.getBoolean("externalOnly"));assertFalse(movie.has("embeds"));
+    }
 }
