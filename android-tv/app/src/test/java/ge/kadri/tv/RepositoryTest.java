@@ -26,6 +26,18 @@ public class RepositoryTest {
         assertTrue(source.getString("url").startsWith("https://cdn2.justfile.store/"));
         assertEquals("ქართული",source.getString("language"));assertEquals("720p",source.getString("quality"));
     }
+    @Test public void guardiansSequelKeepsTheSignedGeorgianSourceOnTheNewCdn() throws Exception {
+        JSONObject movie=Repository.parseMovie(Jsoup.parse(fixture("guardians2.html")),Repository.HOME+"4438-guardians-vol-2.html");
+        assertEquals("გალაქტიკის მცველები 2",movie.getString("title"));
+        JSONArray sources=movie.getJSONArray("sources");assertEquals(1,sources.length());
+        JSONObject source=sources.getJSONObject(0);
+        assertEquals("https://storage.mykadricdn.store/storage/playlists/2025-04/40901/1/2n5d05U4Yp.m3u8?md5=fixture-signature&expires=1794675600&sid=fixture-session",source.getString("url"));
+        assertEquals("ქართული",source.getString("language"));assertEquals("720p",source.getString("quality"));assertFalse(movie.getBoolean("externalOnly"));
+    }
+    @Test public void newCdnSupportKeepsHostAndHttpsRestrictions() {
+        assertEquals("https://storage.mykadricdn.store/a.m3u8?md5=test&expires=123&sid=test",Repository.mediaUrl("https://storage.mykadricdn.store/a.m3u8?md5=test&expires=123&sid=test"));
+        for(String url:new String[]{"https://mykadricdn.store.evil.test/a.m3u8","https://notmykadricdn.store/a.m3u8","http://storage.mykadricdn.store/a.m3u8","https://user@storage.mykadricdn.store/a.m3u8","https://storage.mykadricdn.store:8000/a.m3u8","https://storage.mykadricdn.store/player.html"})assertNull(Repository.mediaUrl(url));
+    }
     @Test public void movieWrapperKeepsLanguageAndQuality() throws Exception {
         String html="<h1>ფილმი</h1><script>let x={movie:[{\"label\":\"ინგლისური\",\"sources\":[{\"file\":\"https://cdn2.justfile.store/a.m3u8\",\"label\":\"1080p\"}]}]};</script>";
         JSONArray sources=Repository.parseMovie(Jsoup.parse(html),Repository.EXAMPLE).getJSONArray("sources");assertEquals(1,sources.length());

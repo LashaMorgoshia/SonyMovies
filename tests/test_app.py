@@ -38,6 +38,24 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(source["contentType"], "application/x-mpegURL")
         self.assertEqual(movie["notice"], "")
 
+    def test_guardians_sequel_keeps_signed_georgian_source_on_new_cdn(self):
+        movie = parse_movie((FIXTURES / "guardians2.html").read_text(), EXAMPLE)
+        self.assertEqual(movie["title"], "გალაქტიკის მცველები 2")
+        self.assertEqual(len(movie["sources"]), 1)
+        source = movie["sources"][0]
+        self.assertEqual(source["url"], "https://storage.mykadricdn.store/storage/playlists/2025-04/40901/1/2n5d05U4Yp.m3u8?md5=fixture-signature&expires=1794675600&sid=fixture-session")
+        self.assertEqual(source["language"], "ქართული")
+        self.assertEqual(source["quality"], "720p")
+        self.assertEqual(source["contentType"], "application/x-mpegURL")
+        self.assertEqual(movie["notice"], "")
+
+    def test_new_cdn_support_keeps_host_and_https_restrictions(self):
+        valid = "https://storage.mykadricdn.store/a.m3u8?md5=test&expires=123&sid=test"
+        self.assertEqual(media_url(valid), valid)
+        for url in ("https://mykadricdn.store.evil.test/a.m3u8", "https://notmykadricdn.store/a.m3u8", "http://storage.mykadricdn.store/a.m3u8", "https://user@storage.mykadricdn.store/a.m3u8", "https://storage.mykadricdn.store:8000/a.m3u8", "https://storage.mykadricdn.store/player.html"):
+            with self.subTest(url=url):
+                self.assertIsNone(media_url(url))
+
     def test_movie_wrapper_keeps_language_and_quality(self):
         html = '<h1>ფილმი</h1><script>let x={movie:[{"label":"ინგლისური","sources":[{"file":"https://cdn2.justfile.store/a.m3u8","label":"1080p"}]}]};</script>'
         sources = parse_movie(html, EXAMPLE)["sources"]

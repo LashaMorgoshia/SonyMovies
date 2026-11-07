@@ -13,7 +13,7 @@ public final class Repository {
     public static final String EXAMPLE = HOME + "11881-vijenqvesti-visionquest-2.html";
     private static final Pattern CONFIG = Pattern.compile("\\b(?:movie|playlist|sources)\\s*:\\s*");
     private static final Set<String> HOSTS = new HashSet<>(Arrays.asList("mykadri.tv", "www.mykadri.tv", "mykadri.com", "www.mykadri.com"));
-    private static final List<String> MEDIA_DOMAINS = Arrays.asList("mykadri.net", "mykadri.tv", "mykadri.com", "justfile.store");
+    private static final List<String> MEDIA_DOMAINS = Arrays.asList("mykadri.net", "mykadri.tv", "mykadri.com", "mykadricdn.store", "justfile.store");
     public static String pageUrl(String raw) {
         URI uri = URI.create(raw.trim());
         if (!"https".equals(uri.getScheme()) || !HOSTS.contains(uri.getHost()) || uri.getUserInfo() != null || (uri.getPort() != -1 && uri.getPort() != 443)) throw new IllegalArgumentException("ჩაწერე MyKadri-ის HTTPS ბმული.");

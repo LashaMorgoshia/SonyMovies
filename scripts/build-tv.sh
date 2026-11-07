@@ -12,5 +12,5 @@ export ANDROID_HOME ANDROID_USER_HOME GRADLE_USER_HOME
 cd "$KADRI_ROOT/android-tv"
 ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
 mkdir -p "$KADRI_ROOT/releases"
-cp app/build/outputs/apk/debug/app-debug.apk "$KADRI_ROOT/releases/MovieNight-1.0.9.apk"
-printf '\nAPK: %s\n' "$KADRI_ROOT/releases/MovieNight-1.0.9.apk"
+cp app/build/outputs/apk/debug/app-debug.apk "$KADRI_ROOT/releases/MovieNight-1.0.10.apk"
+printf '\nAPK: %s\n' "$KADRI_ROOT/releases/MovieNight-1.0.10.apk"

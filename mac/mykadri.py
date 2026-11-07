@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 HOME = "https://mykadri.tv/"
 EXAMPLE = HOME + "11881-vijenqvesti-visionquest-2.html"
 PAGE_HOSTS = {"mykadri.tv", "www.mykadri.tv", "mykadri.com", "www.mykadri.com"}
-# MyKadri publishes direct video on both its own CDN and JustFile.
-MEDIA_DOMAINS = ("mykadri.net", "mykadri.tv", "mykadri.com", "justfile.store")
+# MyKadri publishes direct video on its own CDN domains and JustFile.
+MEDIA_DOMAINS = ("mykadri.net", "mykadri.tv", "mykadri.com", "mykadricdn.store", "justfile.store")
 AGENT = "Mozilla/5.0 KadriTV/1.0"
 
 
